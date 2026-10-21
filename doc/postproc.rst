@@ -624,6 +624,17 @@ Once all the required inputs are present, BBNBI is run in a same way as ASCOT5 w
 Here the command line arguments specify the number of markers to be injected, ``n``, and the time-interval ``[t0,t1]`` when the beam is enabled.
 The time interval is only relevant for time-dependent simulations and all it does is to randomly pick a birth time for an injected marker from the interval.
 
+By default BBNBI seeds its random number generator from the clock.
+The clock has a resolution of one second, so two runs that are started within the same second generate the same markers.
+To set the seed explicitly, for example to run independent repeats of a simulation in parallel, set the environment variable ``BBNBI_SEED`` to an integer:
+
+.. code-block:: bash
+
+   BBNBI_SEED=42 ./bbnbi5 --in=ascot.h5 --n=100000
+
+The same seed gives the same markers only when BBNBI is run with a single OpenMP thread (``OMP_NUM_THREADS=1``).
+With several threads the order in which they draw random numbers varies, so the markers differ from run to run even with the same seed.
+
 Each BBNBI run is stored in HDF5 and the data is accessed via :class:`.BBNBIGroup` which in many ways is similar to :class:`.RunGroup`.
 Instead of storing separate ini- and endstates, only the final state of the markers is stored and it can be used to evaluate wall loads in post-processing or to initialize markers for the follow-up ASCOT5 simulation.
 

@@ -58,7 +58,12 @@ void bbnbi_simulate(
 
     /* Initialize input data */
     simulate_init(sim);
-    random_init(&sim->random_data, time(NULL));
+    /* Seed from BBNBI_SEED if set, which gives independent and reproducible
+     * repeats. Otherwise seed from the clock: its resolution is a second, so
+     * runs started within the same second get identical markers. */
+    const char* seed_env = getenv("BBNBI_SEED");
+    int seed = seed_env ? (int)strtol(seed_env, NULL, 10) : (int)time(NULL);
+    random_init(&sim->random_data, seed);
 
     /* Calculate total NBI power so that we can distribute markers along
      * the injectors according to their power */
