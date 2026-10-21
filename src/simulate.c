@@ -11,6 +11,7 @@
  * on the data once it has been initialized. However, threads should only modify
  * marker and diagnostic data.
  */
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "endcond.h"
@@ -143,7 +144,11 @@ void simulate(int n_particles, particle_state* p, sim_data* sim) {
     /* 2. Meta data (e.g. random number generator) is initialized.            */
     /*                                                                        */
     /**************************************************************************/
-    random_init(&sim->random_data, 0);
+    /* Seed from ASCOT_SEED if set (e.g. for independent repeats of a
+     * simulation), otherwise use seed 0 as before. */
+    const char* seed_env = getenv("ASCOT_SEED");
+    int seed = seed_env ? (int)strtol(seed_env, NULL, 10) : 0;
+    random_init(&sim->random_data, seed);
 
     /**************************************************************************/
     /* 3. Markers are put into simulation queue.                              */

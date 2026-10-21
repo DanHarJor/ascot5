@@ -40,6 +40,16 @@ When not using MPI, it is possible to divide the simulation into separate proces
 
    ascot5_main --mpi_size=size --mpi_rank=rank
 
+The random number generator is seeded with 0 by default, so every simulation uses the same random numbers.
+To run independent repeats of a simulation, set the environment variable ``ASCOT_SEED`` to an integer:
+
+.. code-block:: bash
+
+   ASCOT_SEED=42 ./ascot5_main --in=ascot.h5
+
+The same seed gives the same result only when ASCOT5 is run with a single OpenMP thread (``OMP_NUM_THREADS=1``).
+With several threads the order in which they draw random numbers varies, so the results differ from run to run even with the same seed.
+
 .. _Simulationoptions:
 
 Options
